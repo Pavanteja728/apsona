@@ -1,14 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useContext } from "react";
+import axios from "axios";
+import { Plus, Search } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
 import { AllContext } from "../App";
-import { useState } from "react";
-import { useEffect } from "react";
 import Button from "../components/Button";
 import TugasButton from "../components/TugasButton";
-import { Plus,Search } from "lucide-react";
-import axios from "axios";
-
 
 export default function Tugas() {
   const { token, user, navigate } = useContext(AllContext);
@@ -20,10 +17,10 @@ export default function Tugas() {
     name: "",
     status: false,
   });
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const filteredTugas = taks.filter((taks) =>
-  //   taks.name.includes(searchQuery.toLowerCase())
-  // );
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredTugas = taks.filter((taks) =>
+    taks.NAME.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const initialTugas = () => {
     if (!token) {
@@ -34,18 +31,18 @@ export default function Tugas() {
         const defaultTugas = [
           {
             id: 1,
-            name: "Shalat ",
-            status: false,
+            NAME: "Shalat ",
+            STATUS: false,
           },
           {
             id: 2,
-            name: "Ngerjain Tugas ",
-            status: false,
+            NAME: "Ngerjain Tugas ",
+            STATUS: false,
           },
           {
             id: 3,
-            name: "Makan siang ",
-            status: false,
+            NAME: "Makan siang ",
+            STATUS: false,
           },
         ];
         setTaks(defaultTugas);
@@ -77,6 +74,7 @@ export default function Tugas() {
         </div>
       );
     }
+  
   };
 
   const getTugas = async () => {
@@ -176,13 +174,16 @@ export default function Tugas() {
     }
   };
 
-  useEffect(() => {
-    addTugas;
-    editTugas;
-    initialTugas();
-    getTugas();
-    handleClick;
-  }, token ? [initialTugas, addTugas, editTugas, getTugas] : []);
+  useEffect(
+    () => {
+      addTugas;
+      editTugas;
+      initialTugas();
+      getTugas();
+      handleClick;
+    },
+    token ? [initialTugas, addTugas, editTugas, getTugas] : []
+  );
 
   if (token) {
     return (
@@ -195,7 +196,7 @@ export default function Tugas() {
             Add
             <Plus className="mr-2" />
           </Button>
-          {/* <div className="flex-grow flex items-center ">
+          <div className="flex-grow flex items-center ">
             <input
               placeholder="Search"
               className="flex-grow bg-slate-100 p-3  "
@@ -203,16 +204,15 @@ export default function Tugas() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Search />
-          </div> */}
+          </div>
         </div>
         <main className="overflow-y-auto flex-grow  divide-x divide-gray-400 flex">
           <div className="flex-grow">
             <strong>List Tugasku (Belum Selesai)</strong>
             <div className="overflow-y-auto flex flex-col gap-1 p-5">
-              {
-              // filteredTugas
-              //   .filter((tugasku) => !tugasku.status)
-                taks.filter((tugasku) => tugasku.STATUS == false).map((tugasku) => (
+              {filteredTugas
+                .filter((tugasku) => !tugasku.STATUS)
+                .map((tugasku) => (
                   <TugasButton
                     key={tugasku.id}
                     tugasku={tugasku}
@@ -220,26 +220,23 @@ export default function Tugas() {
                     onClick={handleClick}
                     onEdit={onEdit}
                   />
-                ))
-                }
+                ))}
             </div>
           </div>
           <div className="flex-grow">
             <strong>List Tugasku (Selesai)</strong>
             <div className="overflow-y-auto flex flex-col gap-1 p-1">
-              {
-              // filteredTugas
-              //   .filter((tugasku) => tugasku.status)
-              taks.filter((tugasku) => tugasku.STATUS).map((tugasku) => (
-                <TugasButton
-                  key={tugasku.id}
-                  tugasku={tugasku}
-                  onDelete={deleteTugas}
-                  onClick={handleClick}
-                  onEdit={onEdit}
-                />
-              ))
-                }
+              {filteredTugas
+                .filter((tugasku) => tugasku.STATUS)
+                .map((tugasku) => (
+                  <TugasButton
+                    key={tugasku.id}
+                    tugasku={tugasku}
+                    onDelete={deleteTugas}
+                    onClick={handleClick}
+                    onEdit={onEdit}
+                  />
+                ))}
             </div>
           </div>
         </main>
@@ -296,7 +293,7 @@ export default function Tugas() {
             Add
             <Plus className="mr-2" />
           </Button>
-          {/* <div className="flex-grow flex items-center ">
+          <div className="flex-grow flex items-center ">
             <input
               placeholder="Search"
               className="flex-grow bg-slate-100 p-3  "
@@ -304,16 +301,15 @@ export default function Tugas() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Search />
-          </div> */}
+          </div>
         </div>
         <main className="overflow-y-auto flex-grow  divide-x divide-gray-400 flex">
           <div className="flex-grow">
             <strong>List Tugasku (Belum Selesai)</strong>
             <div className="overflow-y-auto flex flex-col gap-1 p-5">
-              {
-              // filteredTugas
-              //   .filter((tugasku) => !tugasku.status)
-                taks.map((tugasku) => (
+              {filteredTugas
+                .filter((tugasku) => !tugasku.STATUS)
+                .map((tugasku) => (
                   <TugasButton
                     key={tugasku.id}
                     tugasku={tugasku}
@@ -327,10 +323,9 @@ export default function Tugas() {
           <div className="flex-grow">
             <strong>List Tugasku (Selesai)</strong>
             <div className="overflow-y-auto flex flex-col gap-1 p-1">
-              {
-              // filteredTugas
-              //   .filter((tugasku) => tugasku.status)
-                taks.map((tugasku) => (
+              {filteredTugas
+                .filter((tugasku) => tugasku.STATUS)
+                .map((tugasku) => (
                   <TugasButton
                     key={tugasku.id}
                     tugasku={tugasku}

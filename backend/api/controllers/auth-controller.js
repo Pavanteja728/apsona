@@ -42,7 +42,6 @@ export async function register(req, res) {
   const { email, password } = req.body;
   const salt = await bcrypt.genSalt();
   const hash = await bcrypt.hash(password, salt);
-  console.log(req.body)
   try {
     const result = await pool.query(
       "SELECT * FROM users WHERE email = ?",

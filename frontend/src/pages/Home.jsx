@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
-import Notes from "../components/Notes";
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AllContext } from "../App";
+import Notes from "../components/Notes";
 
 const Home = () => {
   const { token, user, navigate } = useContext(AllContext);
@@ -46,7 +45,6 @@ const Home = () => {
     }
   };
 
-
   const handleChange = (e) => {
     setRequest({
       ...request,
@@ -54,10 +52,9 @@ const Home = () => {
     });
   };
 
-  
-
   const addNote = async (e) => {
     e.preventDefault();
+    setEdit(false);
     if (token) {
       axios
         .post(`http://localhost:3000/api/v1/notes/addNotes/${user}`, request, {
@@ -67,8 +64,8 @@ const Home = () => {
           alert(res.data.message);
           setNote({});
           setRequest({
-            title: "",
-            content: "",
+            title: null,
+            content: null,
           });
         });
     } else {
@@ -80,6 +77,7 @@ const Home = () => {
         </div>
       );
     }
+    window.location.reload();
   };
 
   const handleEdit = (note) => {
@@ -105,7 +103,7 @@ const Home = () => {
           alert(res.data.message);
         });
       setNote({});
-      setRequest({ title: "", content: "" });
+      setRequest({ title: null, content: null });
       setEdit(false);
     } else {
       return (
@@ -116,6 +114,7 @@ const Home = () => {
         </div>
       );
     }
+    window.location.reload();
   };
 
   const deleteNote = async (id) => {
@@ -155,17 +154,20 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    initialNotes();
-    addNote();
-    handleEdit;
-    editNote;
-    getNote();
-  }, token ? [initialNotes, addNote, handleEdit, editNote] : []);
+  useEffect(
+    () => {
+      initialNotes();
+      addNote();
+      handleEdit;
+      editNote;
+      getNote();
+    },
+    token ? [initialNotes, addNote, handleEdit, editNote] : []
+  );
 
   if (token) {
     return (
-      <div className="bg-gray-400">
+      <div className="bg-gray-300">
         <form
           className="max-w-4xl mx-auto px-4 py-8"
           action="/"
@@ -179,7 +181,7 @@ const Home = () => {
               className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
               required
               placeholder="Judul Catatan"
-              defaultValue={note.title ? note.title : ""}
+              defaultValue={edit ? note.title : ""}
               onChange={handleChange}
             />
             <textarea
@@ -188,12 +190,12 @@ const Home = () => {
               className="border border-gray-300 rounded px-3 py-2 w-full mb-2"
               required
               placeholder="Isi Catatan"
-              defaultValue={note.content ? note.title : ""}
+              defaultValue={edit ? note.title : ""}
               onChange={handleChange}
             />
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-600 text-black font-bold py-2 px-4 rounded"
             >
               {edit ? "Simpan Perubahan" : "Tambah Catatan"}
             </button>

@@ -46,7 +46,6 @@ export const editTugas = async (req, res) => {
 };
 export const clickTugas = async (req, res) => {
   const { STATUS } = req.body;
-  console.log(req.body);
   try {
     await pool.query(
       "UPDATE tugas SET STATUS = ? WHERE id = ?",
